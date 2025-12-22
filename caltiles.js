@@ -80,7 +80,7 @@ function setupTiles() {
           modalImage.style.display = "none";
         }
       } else {
-        modalText.textContent = `This door opens in ${timeRemaining(tileDay)} ⏳`;
+        modalText.textContent = `This door opens in ${timeRemaining(tileDay)}`;
         modalImage.style.display = "none";
       }
     });
