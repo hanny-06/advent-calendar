@@ -127,6 +127,29 @@ body {
   border-radius: 12px;
   display: none;
 }
+.audio-wrapper {
+  margin-top: 16px;
+}
+
+#voice-audio {
+  display: none;
+}
+
+#play-audio-btn {
+  font-family: "geist-mono";
+  font-size: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #000;
+  background: #000000;
+  color:#fff;
+  cursor: pointer;
+}
+
+#play-audio-btn:hover {
+  background: #2b2b2b;
+  color: #fff;
+}
 
 .blank-space {
   text-align: center;
