@@ -12,10 +12,14 @@ const playBtn = document.getElementById("play-audio-btn");
 const tiles = document.querySelectorAll(".tile");
 let notes = {};
 
+// 🇮🇳 India time
 const now = new Date(
   new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
 );
+
 const today = now.getDate();
+const currentMonth = now.getMonth(); // 0 = Jan, 11 = Dec
+const isAfterDecember = currentMonth !== 11;
 
 fetch("notes.json")
   .then(res => res.json())
@@ -26,12 +30,14 @@ fetch("notes.json")
 
 function timeRemaining(day) {
   const target = new Date(now);
+  target.setMonth(11); // December
   target.setDate(day);
   target.setHours(0, 0, 0, 0);
 
   const diff = target - now;
-  const totalMinutes = Math.floor(diff / (1000 * 60));
+  if (diff <= 0) return "0m";
 
+  const totalMinutes = Math.floor(diff / (1000 * 60));
   const days = Math.floor(totalMinutes / (60 * 24));
   const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
   const minutes = totalMinutes % 60;
@@ -44,14 +50,15 @@ function timeRemaining(day) {
 function setupTiles() {
   tiles.forEach(tile => {
     const day = Number(tile.dataset.day);
+    const isUnlocked = isAfterDecember || day <= today;
 
-    tile.classList.add(day <= today ? "unlocked" : "locked");
+    tile.classList.add(isUnlocked ? "unlocked" : "locked");
 
     tile.addEventListener("click", () => {
       modal.classList.remove("hidden");
       modalDate.textContent = `December ${day}`;
 
-      // 🔄 Reset modal state
+      // 🔄 Reset modal
       modalText.textContent = "";
       modalImage.style.display = "none";
       audioWrapper.classList.add("hidden");
@@ -59,7 +66,7 @@ function setupTiles() {
       audio.currentTime = 0;
       playBtn.textContent = "▶ Play voice note";
 
-      if (day <= today) {
+      if (isUnlocked) {
         const note = notes[day];
 
         modalText.textContent = note?.text || "";
@@ -75,7 +82,6 @@ function setupTiles() {
           audio.load();
         }
       } else {
-        // 🔒 Locked tile message
         modalText.textContent = `This door opens in ${timeRemaining(day)}`;
       }
     });
@@ -102,7 +108,7 @@ modal.onclick = e => {
   if (e.target === modal) closeModal.onclick();
 };
 
-// Background music
+// 🎵 Background music
 const music = document.getElementById("bg-music");
 const muteBtn = document.getElementById("muteBtn");
 
